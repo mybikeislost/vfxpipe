@@ -70,17 +70,19 @@ def createTechPasses():
         renderElement = cmds.rename (renderElement, layerToMake)
     # create top down
     layerToMake = 'topdown'
-    if not cmds.objExists(layerToMake) :
+    if not cmds.objExists (layerToMake) :
         renderElement = mel.eval ('vrayAddRenderElement ExtraTexElement;')
         renderElement = cmds.rename (renderElement,layerToMake)
-        cmds.setAttr (renderElement + '.vray_explicit_name_extratex', layerToMake, type = 'string')
-        # now create the vray plugin with no placement on UV (0 = none, 1 = 2d, 2 = 3d)
-        newNode = mel.eval('vrayCreateNodeFromDll ("topdown_tex", "texture", "TexFalloff", 2);')
-        newNode = cmds.rename('topdown_tex','topdown_tex')
-        cmds.setAttr (newNode + '.direction_type', 2)
-        cmds.setAttr (newNode + '.color1', 1, 0, 0, type='double3')
-        cmds.setAttr (newNode + '.color2', 0, 1, 0, type='double3')
-        cmds.connectAttr (newNode + '.outColor', renderElement + '.vray_texture_extratex')  
+        cmds.setAttr(renderElement + '.vray_explicit_name_extratex', 'topdown', type = 'string') 
+        newNode = mel.eval('$node = `shadingNode -asTexture -name "topdown_tex" VRayPluginNodeTex`;\
+        vray addAttributesFromDll $node "texture" "TexFalloff";\
+        int $placement = 2;\
+        vrayCreateNodeFromDll_connectUVW $node $placement;\
+        ')
+        cmds.evalDeferred("cmds.setAttr (('{0}.direction_type'.format('topdown_tex')), 2)", lowestPriority=True)
+        cmds.evalDeferred("cmds.setAttr (('{0}.color1'.format('topdown_tex')), 1, 0, 0,  type='double3')", lowestPriority=True)
+        cmds.evalDeferred("cmds.setAttr (('{0}.color2'.format('topdown_tex')), 0, 1, 0,  type='double3')", lowestPriority=True)
+        cmds.evalDeferred("cmds.connectAttr (('{0}.outColor'.format('topdown_tex')), '{0}.vray_texture_extratex'.format('topdown'))", lowestPriority=True)
         
     # create AO
     layerToMake = 'ao'
