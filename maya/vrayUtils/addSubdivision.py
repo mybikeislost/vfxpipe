@@ -9,4 +9,4 @@ def addSubdivision():
     for node in nodeList:
         mel.eval('vray addAttributesFromGroup %s vray_subdivision 1' % node)
         mel.eval('vray addAttributesFromGroup %s vray_subquality 1' % node)
-        cmds.setAttr (node + '.vrayMaxSubdivs', 4)
+        cmds.evalDeferred("cmds.setAttr ('%s.vrayMaxSubdivs', 4)"% node)
