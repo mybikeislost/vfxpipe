@@ -48,6 +48,7 @@ def createTechPasses():
     if not cmds.objExists(layerToMake) :
         renderElement = mel.eval('vrayAddRenderElement zdepthChannel;')
         renderElement = cmds.rename (renderElement, layerToMake)
+        cmds.setAttr(renderElement + '.vray_name_zdepth', layerToMake, type = 'string') 
         cmds.setAttr(renderElement + '.vray_depthClamp', 0)
         cmds.setAttr(renderElement + '.vray_filtering_zdepth', 1)    
     # add base render layers for recomp
