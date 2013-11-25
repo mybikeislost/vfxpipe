@@ -13,16 +13,33 @@ def createTechPasses():
     if not cmds.objExists(samplerNodeName) :
         samplerNode = cmds.shadingNode('samplerInfo', asUtility=True)
         samplerNode = cmds.rename(samplerNode, samplerNodeName)
-    # now we make the xyz point render element
-    layerToMake = 'XYZ_tex'
+    layerToMake = 'P'
     if not cmds.objExists(layerToMake) :
         renderElement = mel.eval ('vrayAddRenderElement ExtraTexElement;')
         cmds.rename (renderElement,layerToMake)
-        cmds.setAttr (layerToMake + '.vray_explicit_name_extratex', 'world_xyz', type = 'string')
+        cmds.setAttr (layerToMake + '.vray_explicit_name_extratex', 'Pworld', type = 'string')
         cmds.setAttr (layerToMake + '.vray_considerforaa_extratex', 0)
-        cmds.connectAttr (samplerNode + '.pointWorld', 'XYZ_tex.vray_texture_extratex')
+        cmds.connectAttr (samplerNode + '.pointWorld', 'Pworld.vray_texture_extratex')
+    layerToMake = 'Pcam'
+    if not cmds.objExists(layerToMake) :
+        renderElement = mel.eval ('vrayAddRenderElement ExtraTexElement;')
+        cmds.rename (renderElement,layerToMake)
+        cmds.setAttr (layerToMake + '.vray_explicit_name_extratex', 'Pcam', type = 'string')
+        cmds.setAttr (layerToMake + '.vray_considerforaa_extratex', 0)
+        cmds.connectAttr (samplerNode + '.pointCamera', 'Pcam.vray_texture_extratex')
+        
+    # layerToMake = 'Pobj'
+    # if not cmds.objExists(layerToMake) :
+    #     renderElement = mel.eval ('vrayAddRenderElement ExtraTexElement;')
+    #     cmds.rename (renderElement,layerToMake)
+    #     cmds.setAttr (layerToMake + '.vray_explicit_name_extratex', 'Pobj', type = 'string')
+    #     cmds.setAttr (layerToMake + '.vray_considerforaa_extratex', 0)
+    #     cmds.connectAttr (samplerNode + '.pointObject', 'Pobj.vray_texture_extratex')
+
+
+
     # now we make the normals render element
-    layerToMake = 'normals'
+    layerToMake = 'N'
     if not cmds.objExists(layerToMake) :
         renderElement = mel.eval ('vrayAddRenderElement normalsChannel;')
         cmds.rename (renderElement,layerToMake)
